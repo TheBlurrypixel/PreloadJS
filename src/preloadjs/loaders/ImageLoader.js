@@ -85,20 +85,39 @@ this.createjs = this.createjs || {};
 		return item.type == createjs.Types.IMAGE;
 	};
 
+	// Private methods
+	/**
+	 * Create an internal request used for loading
+	 * overriding to add DatatURI option for images
+	 * @method _createRequest
+	 * @protected
+	 */
+	p._createRequest = function() {
+		if(this._item.dataURI) {
+			this._request = new createjs.DataURITagRequest(this._item, this._tag || this._createTag(), this._tagSrcAttribute);
+		} else if(!this._preferXHR) {
+			this._request = new createjs.TagRequest(this._item, this._tag || this._createTag(), this._tagSrcAttribute);
+		} else {
+			this._request = new createjs.XHRRequest(this._item);
+		}
+	};
+
 	// public methods
+	// fixing this._request may be unassigned when using tags with ImageLoader
 	p.load = function () {
-		if (this._tag.src != "" && this._tag.complete) {
+		if(this._tag.src != "" && this._tag.complete) {
+			if(!this._request) this.AbstractLoader_load();
 			this._request._handleTagComplete();
 			this._sendComplete();
 			return;
 		}
-
+	
 		var crossOrigin = this._item.crossOrigin;
-		if (crossOrigin === true) { crossOrigin = "Anonymous"; }
+		if (crossOrigin == true) { crossOrigin = "Anonymous"; }
 		if (crossOrigin != null && !createjs.URLUtils.isLocal(this._item)) {
 			this._tag.crossOrigin = crossOrigin;
 		}
-
+	
 		this.AbstractLoader_load();
 	};
 
@@ -132,6 +151,8 @@ this.createjs = this.createjs || {};
 	/**
 	 * The asynchronous image formatter function. This is required because images have
 	 * a short delay before they are ready.
+	 * 
+	 * modifying because _formatImage still gets called by both tag and XHR requests so mod createObjectURL here
 	 * @method _formatImage
 	 * @param {Function} successCallback The method to call when the result has finished formatting
 	 * @param {Function} errorCallback The method to call if an error occurs during formatting
@@ -145,13 +166,13 @@ this.createjs = this.createjs || {};
 
 			//document.body.removeChild(tag);
 		} else if (URL) {
-			var objURL = URL.createObjectURL(this.getResult(true));
+			var objURL = URL.createObjectURL(this._item.dataURI ? createjs.DataUtils.dataURItoBlob(this._item.dataURI) : this.getResult(true));
 			tag.src = objURL;
 
 			tag.addEventListener("load", this._cleanUpURL, false);
 			tag.addEventListener("error", this._cleanUpURL, false);
 		} else {
-			tag.src = this._item.src;
+			tag.src = this._item.dataURI || this._item.src;
 		}
 
 		if (tag.complete) {

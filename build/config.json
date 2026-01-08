@@ -6,6 +6,7 @@
 		"../src/createjs/utils/deprecate.js",
 		"../src/createjs/utils/proxy.js",
         "../src/createjs/utils/indexOf.js",
+		
 		"../src/createjs/events/Event.js",
 		"../src/createjs/events/ErrorEvent.js",
 		"../src/createjs/events/EventDispatcher.js",
@@ -26,6 +27,8 @@
 		"../src/preloadjs/net/TagRequest.js",
 		"../src/preloadjs/net/MediaTagRequest.js",
 		"../src/preloadjs/net/XHRRequest.js",
+		"../src/preloadjs/net/DataURIRequest.js",
+		"../src/preloadjs/net/DataURITagRequest.js",
 		"../src/preloadjs/LoadQueue.js",
 		"../src/preloadjs/loaders/TextLoader.js",
 		"../src/preloadjs/loaders/BinaryLoader.js",

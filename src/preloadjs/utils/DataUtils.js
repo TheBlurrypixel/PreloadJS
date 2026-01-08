@@ -94,6 +94,44 @@
 		}
 	};
 
+	/**
+	 * converts base64 string to an Array buffer for use in converting dataURI to formats we can use
+	 *
+	 * @method base64ToArrayBuffer
+	 * @param {Function} method The function to call
+	 * @param {String} base64 encoded string
+	 * @returns {Object} Uint8Array ArrayBuffer
+	 * @public
+	 * @static
+	 */
+	s.base64ToArrayBuffer = function (base64) {
+		var binaryString =  window.atob(base64); 
+		var len = binaryString.length; 
+		var bytes = new Uint8Array( len ); 
+		for (var i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i); 
+		return bytes.buffer; 
+	}
+
+	/**
+	 * converts base64 string to an Array buffer for use in converting dataURI to formats we can use
+	 *
+	 * @method dataURItoBlob
+	 * @param {Function} method The function to call
+	 * @param {String} dataURI encoded string in dataURI format
+	 * @returns {Object} Blob converted from dataURI
+	 * @public
+	 * @static
+	 */
+	s.dataURItoBlob = function (dataURI) {
+		var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+		var binary = atob(dataURI.split(',')[1]);
+		var array = [];
+		for (var i = 0; i < binary.length; i++) {
+			array.push(binary.charCodeAt(i));
+		}
+		return new Blob([new Uint8Array(array)], {type: mime});
+	}
+	
 	createjs.DataUtils = s;
 
 }());

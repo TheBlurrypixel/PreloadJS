@@ -35,6 +35,18 @@ module.exports = function (grunt) {
 						}
 					}
 				},
+				terser: {
+					options: {
+						format: {
+							comments: false
+						}
+					},
+					build: {
+						files: {
+							'output/<%= pkg.name.toLowerCase() %><%= fileVersion %>.min.js': getConfigValue('source'),
+						}
+					}
+				},
 
 				concat: {
 					options: {
@@ -237,6 +249,7 @@ module.exports = function (grunt) {
 	// Load all the tasks we need
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-terser');
 	grunt.loadNpmTasks('grunt-contrib-yuidoc');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-contrib-copy');
@@ -272,7 +285,7 @@ module.exports = function (grunt) {
 	 * Build the docs using YUIdocs.
 	 */
 	grunt.registerTask('docs', [
-		"sass", "setDocsBase", "yuidoc", "resetBase", "clean:docs", "compress", "copy:docsZip"
+		"setDocsBase", "yuidoc", "resetBase", "clean:docs", "compress", "copy:docsZip"
 	]);
 
 	/**
@@ -298,7 +311,7 @@ module.exports = function (grunt) {
 	 *
 	 */
 	grunt.registerTask('nextlib', [
-		"updateversion", "combine", "uglify", "clearversion", "copy:src"
+		"updateversion", "combine", "terser", "clearversion", "copy:src"
 	]);
 
 	/** Aliased task for WebStorm quick-run */
@@ -323,7 +336,7 @@ module.exports = function (grunt) {
 	 *
 	 */
 	grunt.registerTask('coreBuild', [
-		"updateversion", "combine", "uglify", "clearversion", "docs", "copy:src"
+		"updateversion", "combine", "terser", "clearversion", "docs", "copy:src"
 	]);
 
 	/**
