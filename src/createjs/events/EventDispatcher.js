@@ -176,11 +176,12 @@ this.createjs = this.createjs||{};
 	 * @method addEventListenerPromise
 	 * @param {String} eventType The string type of the event.
 	 * @param {Function} inCallback A function that returns a eventListener that can resolve the returned promise
+	 * @param {Boolean} [useCapture] For events that bubble, indicates whether to listen for the event in the capture or bubbling/target phase.
 	 * @return {Object} Returns a promise that can be resolved by the returned eventListener above
 	 **/
-	p.addEventListenerPromise = function(eventType, inCallback) {
+	p.addEventListenerPromise = function(eventType, inCallback, useCapture) {
 		return new Promise(res => {
-			this.addEventListener(eventType, inCallback(res));
+			this.addEventListener(eventType, inCallback(res), useCapture);
 		});
 	};
 	
@@ -191,13 +192,14 @@ this.createjs = this.createjs||{};
 	 * @param {String} eventType1 The string type of the first event.
 	 * @param {String} eventType2 The string type of the second event.
 	 * @param {Function} inCallback A function that returns a eventListener that can resolve the returned promise
+	 * @param {Boolean} [useCapture] For events that bubble, indicates whether to listen for the event in the capture or bubbling/target phase.
 	 * @return {Object} Returns a promise that can be resolved by the returned eventListener above
 	 **/
-	p.doubleAddEventListenerPromise = function(eventType1, eventType2, inCallback) {
+	p.doubleAddEventListenerPromise = function(eventType1, eventType2, inCallback, useCapture1, useCapture2) {
 		return new Promise(res => {
 			var eventHandler = inCallback(res);
-			this.addEventListener(eventType1, eventHandler);
-			this.addEventListener(eventType2, eventHandler);
+			this.addEventListener(eventType1, eventHandler, useCapture1);
+			this.addEventListener(eventType2, eventHandler, useCapture2);
 		});
 	};
 	
